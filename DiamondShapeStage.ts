@@ -30,6 +30,32 @@ const updateValue : Function = (scale : number, dir : number, a : number, b : nu
     return mirrorValue(scale, a, b) * dir * scGap
 }
 
+const drawDSNode : Function = (context : CanvasRenderingContext2D, i : number, scale : number) => {
+    const gap : number = h / (nodes + 1)
+    const size : number = gap / sizeFactor
+    const sc1 : number = divideScale(scale, 0, 2)
+    const sc2 : number = divideScale(scale, 1, 2)
+    context.lineCap = 'round'
+    context.lineWidth = Math.min(w, h) / strokeFactor
+    context.fillStyle = foreColor
+    context.save()
+    context.translate(w / 2, gap * (i + 1))
+    context.rotate(Math.PI/2 * sc2)
+    context.fillRect(-size, -size/2, 2 * size, size)
+    for (var j = 0; j < ends; j++) {
+        const sf : number = 1 - 2 * j
+        const sc : number = divideScale(scale, j, ends)
+        context.save()
+        context.beginPath()
+        context.moveTo(-size, -size/2 * sf)
+        context.lineTo(-size, (-size/2 - size/2 * sc) * sf)
+        context.lineTo(size, -size/2 * sf)
+        context.fill()
+        context.restore()
+    }
+    context.restore()
+}
+
 class DiamondShapeStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
