@@ -4,7 +4,7 @@ const scGap : number = 0.05
 const scDiv : number = 0.51
 const nodes : number = 5
 const ends : number = 2
-const strokeFactor : number = 90
+const strokeFactor : number = Math.min(w, h)
 const sizeFactor : number = 2.9
 const foreColor : string = "#1976D2"
 const backColor : string = "#BDBDBD"
@@ -14,7 +14,7 @@ const maxScale : Function = (scale : number, i : number, n : number) : number =>
 }
 
 const divideScale : Function = (scale : number, i : number, n : number) : number => {
-    return Math.min(1 / n, maxScale(i, n)) * n
+    return Math.min(1 / n, maxScale(scale, i, n)) * n
 }
 
 const scaleFactor : Function = (scale : number) : number => {
@@ -38,19 +38,22 @@ const drawDSNode : Function = (context : CanvasRenderingContext2D, i : number, s
     context.lineCap = 'round'
     context.lineWidth = Math.min(w, h) / strokeFactor
     context.fillStyle = foreColor
+    context.strokeStyle = foreColor
     context.save()
     context.translate(w / 2, gap * (i + 1))
     context.rotate(Math.PI/2 * sc2)
-    context.fillRect(-size, -size/2, 2 * size, size)
+    context.fillRect(-size / 2, -size/2, size, size)
+    context.strokeRect(-size / 2, -size/2, size, size)
     for (var j = 0; j < ends; j++) {
         const sf : number = 1 - 2 * j
-        const sc : number = divideScale(scale, j, ends)
+        const sc : number = divideScale(sc1, j, ends)
         context.save()
         context.beginPath()
-        context.moveTo(-size, -size/2 * sf)
-        context.lineTo(-size, (-size/2 - size/2 * sc) * sf)
-        context.lineTo(size, -size/2 * sf)
+        context.moveTo(-size / 2, -size/2 * sf)
+        context.lineTo(0, (-size/2 - size/2 * sc) * sf)
+        context.lineTo(size / 2, -size/2 * sf)
         context.fill()
+        context.stroke()
         context.restore()
     }
     context.restore()
