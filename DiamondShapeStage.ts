@@ -196,3 +196,25 @@ class DiamondShape {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    animator : Animator = new Animator()
+    ds : DiamondShape = new DiamondShape()
+
+    render(context : CanvasRenderingContext2D) {
+        this.ds.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.ds.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.ds.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
